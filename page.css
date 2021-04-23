@@ -8,24 +8,17 @@
 body {
     box-sizing: border-box;
     position: relative;    
-    display: grid;
-
-    grid-template-rows: 4em auto;
-    grid-template-columns: 75vw 25vw;
 }
 
-#header {
+#header .flex {
     grid-column-start: 1;
-    grid-row-start: 1;
-    height: auto;
-    border-bottom: solid 1px #000000;
-    border-right: solid 1px #000000;
-    border-bottom-right-radius: 10px;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 
+    background-color: #333333;
+    color: #ffffff;
     font-family: 'Open Sans';
     font-weight: 300;
 }
@@ -39,30 +32,73 @@ body {
 }
 
 #main-section {
-    grid-row-start: 2;
     grid-column-start: 1;
-    width: 100%; 
+    width: auto;
+
+    background-color: #666666;
+}
+
+#header .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 0 0.5em;
+    background-color: #333333;
+}
+
+#header input {
+    border: solid 2px #999999;
+    background-color: #eeeeee;
+    padding: 0.4em 0.5em;
+    font-family: "Open Sans";
+    font-size: 0.9rem;
+    border-radius: 5px;
+    max-width: 30em;
+    min-width: 20vw;
+    outline: none;
+    margin: 0 0 0.5em 0;
+}
+
+#main-section ul {
+    height: 86vh;
+}
+
+.content-wrapper {
+    height: 100vh;
+    width: 70vw;
+}
+
+#main-section ul li:nth-child(2n+1) { background-color: #666666; }   
+#main-section ul li:nth-child(2n) { background-color: #333333; }   
+
+#main-section ul li button {
+    margin: 0 1em 0 0;
+    font-family: "Open Sans";
+    font-size: 1rem;
+    padding: 0.1em 0.5em;
+    background-color: rgb(58, 178, 226);
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+
 }
 
 #change-list {
-    grid-column-start: 2;
-    grid-row-start: 1;
-    grid-row-end: 2;
+    position: absolute;
+    right: 0;
+    top: 0;
     height: 100vh;
-    border-left: solid 1px #000000;
-    border-right: solid 1px #000000;
-    /* border-bottom: solid 1px #000000; */
-    margin: 0 1px 0 0;
+    width: 30vw;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    background-color: #333333;
 }
 
-#change-list ul {
-    height: 100%;
-    overflow-y: scroll;
+::-webkit-scrollbar {
+    display: none;
 }
 
 #change-list #update {
@@ -82,12 +118,16 @@ body {
 
 #change-list #update:hover { background-color: #666666; }
 
-
-#change-list ul {
+ul {
     list-style: none;
 }
 
-#change-list ul li {
+#change-list ul {
+    height: 100%;
+    overflow-y: auto;
+}
+
+ul li {
     width: 100%;
     background-color: #666666;
     color: #ffffff;
@@ -103,7 +143,7 @@ body {
     align-items: center;
 }
 
-#change-list ul li .close-btn {
+ul li .close-btn {
     color: #ffffff;
     margin: 0 0.5em 0 0;
     font-size: 1.2rem;
@@ -113,23 +153,22 @@ body {
     -moz-transition-duration: 0.2s;
 }
 
-#change-list ul li p { font-weight: 400; }
-#change-list ul li div p:nth-child(2) { font-weight: 600; }
+ul li p { font-weight: 400; }
+ul li div p:nth-child(2) { font-weight: 600; }
+ul li .close-btn:hover { color: #333333; }
 
-#change-list ul li .close-btn:hover { color: #333333; }
-
-#change-list ul li div {
+ul li div {
     display: flex;
     justify-content: space-evenly;
     margin: 0 0.5em 0;
     align-items: center;
 }
 
-#change-list ul li div p {
+ul li div p {
     margin: 0 0.4em;
 }
 
-#change-list ul li p {
+ul li p {
     margin: 0 0 0 0.5em;
 }
 

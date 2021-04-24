@@ -216,10 +216,34 @@ function bindPartsListButtons() {
     });
 }
 
+function bindSearchBar() {
+    function eventListener() {
+        let value = PartSearch.value.toString().toUpperCase().trim();
+
+        if(value === "") {
+            for(part in PartsListsElements) {
+                PartsListsElements[part].classList.remove("hidden");
+            }
+        } else {
+            for(part in PartsListsElements) {
+                let partName = PartsListsElements[part].getAttribute("part-name").toUpperCase().trim();
+
+                if(!partName.includes(value)) PartsListsElements[part].classList.add("hidden");
+            }
+        }
+    }
+
+    PartSearch.addEventListener("change", eventListener);
+    PartSearch.addEventListener("keyup", eventListener);
+    PartSearch.addEventListener("past", eventListener);
+    
+}
+
 /* Window load function aka. main function */
 window.addEventListener('load', function() {
 
     loadPartsList(); // Load the parts list
     bindPartsListButtons(); // Bind the add and remove parts list buttons
+    bindSearchBar(); // Bind the search bar
 
 });

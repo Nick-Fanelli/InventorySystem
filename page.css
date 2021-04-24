@@ -198,3 +198,5 @@ ul li p {
 }
 
 .fa-plus:hover, .fa-minus:hover { color: #aaaaaa; }
+
+.hidden { display: none !important; }

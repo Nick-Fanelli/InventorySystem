@@ -76,11 +76,15 @@ body {
     font-family: "Open Sans";
     font-size: 1rem;
     padding: 0.1em 0.5em;
-    background-color: rgb(58, 178, 226);
+    background-color: #90ee90;
     border: none;
     border-radius: 5px;
     color: #ffffff;
+    cursor: pointer;
+}
 
+#main-section ul li button.remove {
+    background-color: #f08080;
 }
 
 #change-list {

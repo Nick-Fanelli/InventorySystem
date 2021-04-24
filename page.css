@@ -181,6 +181,7 @@ ul li p {
 
 .fa-plus {
     cursor: pointer; 
+    color: #ffffff;
 
     transition-duration: 0.2s;
     -webkit-transition-duration: 0.2s;
@@ -189,11 +190,11 @@ ul li p {
 
 .fa-minus {
     cursor: pointer;
+    color: #ffffff;
 
     transition-duration: 0.2s;
     -webkit-transition-duration: 0.2s;
     -moz-transition-duration: 0.2s;
 }
 
-.fa-plus:hover { color: #90ee90; }
-.fa-minus:hover { color: #f08080; }
+.fa-plus:hover, .fa-minus:hover { color: #aaaaaa; }

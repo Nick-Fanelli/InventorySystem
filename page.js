@@ -72,6 +72,62 @@ function closeSelectedPart(element) {
     SelectedPartsListElements.splice(removeIndex, 1);
 }
 
+function incrementChangeCount(element) {
+    let name = element.parentElement.parentElement.querySelector(".name");
+    let counter = element.parentElement.querySelector(".count");
+
+    let currentCount = Number.parseInt(counter.innerHTML) + 1;
+    counter.innerHTML = currentCount;
+
+    if(currentCount > 0) {
+        counter.classList.remove("negative")
+        counter.classList.add("positive");
+
+        name.classList.remove("negative");
+        name.classList.add("positive");
+    } else if(currentCount < 0) {
+        counter.classList.remove("positive");
+        counter.classList.add("negative");
+
+        name.classList.remove("positive");
+        name.classList.add("negative");
+    } else {
+        counter.classList.remove("negative");
+        counter.classList.remove("positive");
+
+        name.classList.remove("negative");
+        name.classList.remove("positive");
+    }
+}
+
+function decrementChangeCount(element) {
+    let name = element.parentElement.parentElement.querySelector(".name");
+    let counter = element.parentElement.querySelector(".count");
+
+    let currentCount = Number.parseInt(counter.innerHTML) - 1;
+    counter.innerHTML = currentCount;
+
+    if(currentCount > 0) {
+        counter.classList.remove("negative")
+        counter.classList.add("positive");
+
+        name.classList.remove("negative");
+        name.classList.add("positive");
+    } else if(currentCount < 0) {
+        counter.classList.remove("positive");
+        counter.classList.add("negative");
+
+        name.classList.remove("positive");
+        name.classList.add("negative");
+    } else {
+        counter.classList.remove("negative");
+        counter.classList.remove("positive");
+
+        name.classList.remove("negative");
+        name.classList.remove("positive");
+    }
+}
+
 /* Clears and loads full parts list */
 function loadPartsList() { 
     PartsList.innerHTML = ""; 
@@ -117,11 +173,11 @@ function generateSelectedPartsListPart(partID, quantity, name) {
     element.setAttribute("part-quantity", quantity);
 
     let data = `
-        <p>${name}</p>
+        <p class="name">${name}</p>
         <div>
-            <p class="fa fa-minus"></p>
-            <p>0</p>
-            <p class="fa fa-plus"></p>
+            <p class="fa fa-minus" onclick="decrementChangeCount(this);"></p>
+            <p class="count">0</p>
+            <p class="fa fa-plus" onclick="incrementChangeCount(this);"></p>
         </div>
         <p class="fa fa-times-circle close-btn" onclick="closeSelectedPart(this);"></p>
     `
@@ -148,8 +204,6 @@ function bindPartsListButtons() {
             } else {                
                 removePartFromSelectedList(parent, index, element);
             }
-
-            // TODO: Update the selected list
         }
     });
 }

@@ -22,7 +22,7 @@ function addPartToSelectedList(part, element) {
     element.innerHTML = "Remove";
     element.classList.add("remove");
 
-    SelectedPartsList.innerHTML += selectedPart.outerHTML;
+    SelectedPartsList.appendChild(selectedPart);
 }
 
 function removePartFromSelectedList(parent, index, element) {
@@ -35,6 +35,41 @@ function removePartFromSelectedList(parent, index, element) {
     SelectedPartsListElements.splice(index, 1);
     element.innerHTML = "Add";
     element.classList.remove("remove");
+}
+
+function closeSelectedPart(element) {
+    let parent = element.parentElement;
+    let partID = parent.getAttribute("part-id");
+
+    let selectedInventoryPart = null;
+
+    for(part in PartsListsElements) {
+        if(PartsListsElements[part].getAttribute("part-id") == partID) {
+            selectedInventoryPart = PartsListsElements[part];
+            break;
+        }
+    }
+
+    if(selectedInventoryPart == null) {
+        console.error("Selected Inventory Part came back null! :(");
+        return;
+    }
+
+    SelectedPartsList.removeChild(parent);
+
+    selectedInventoryPart.children[1].innerHTML = "Add";
+    selectedInventoryPart.children[1].classList.remove("remove");
+
+    let removeIndex;
+
+    SelectedPartsListElements.forEach(function(item, index) {
+        if(item == parent) {
+            removeIndex = index;
+            return;
+        }
+    });
+
+    SelectedPartsListElements.splice(removeIndex, 1);
 }
 
 /* Clears and loads full parts list */
@@ -54,18 +89,25 @@ function loadPartsList() {
 
 /* Adds a given part to the parts list */
 function addPartToPartsList(part) { 
-    PartsList.innerHTML += part; 
+    PartsList.appendChild(part); 
     PartsListsElements.push(part);
 }
 
 /* Creates a formatted part for the main parts list */
 function generatePartsListsPart(partID, quantity, name, added) {
-    return `
-    <li part-name="${name}" part-id="${partID}" part-quantity="${quantity}">
-        <p>${name}</p>
-        <button ${added ? "class='remove'" : ""}>${added ? "Remove" : "Add"}</button>
-    </li>
+    let element = document.createElement("li");
+    element.setAttribute("part-name", name);
+    element.setAttribute("part-id", partID);
+    element.setAttribute("part-quantity", quantity);
+
+    let data = `
+    <p>${name}</p>
+    <button ${added ? "class='remove'" : ""}>${added ? "Remove" : "Add"}</button>
     `;
+
+    element.innerHTML = data;
+
+    return element;
 }
 
 function generateSelectedPartsListPart(partID, quantity, name) {
@@ -78,7 +120,7 @@ function generateSelectedPartsListPart(partID, quantity, name) {
         <p>${name}</p>
         <div>
             <p class="fa fa-minus"></p>
-            <p class="negative">-1</p>
+            <p>0</p>
             <p class="fa fa-plus"></p>
         </div>
         <p class="fa fa-times-circle close-btn" onclick="closeSelectedPart(this);"></p>
@@ -87,10 +129,6 @@ function generateSelectedPartsListPart(partID, quantity, name) {
     element.innerHTML = data;
 
     return element;
-}
-
-function closeSelectedPart(element) {
-    console.log(element);
 }
 
 function bindPartsListButtons() {
@@ -102,7 +140,7 @@ function bindPartsListButtons() {
             let index = -1;
 
             SelectedPartsListElements.forEach(function(part, i) {
-                if(part.getAttribute("part-id") == parent.getAttribute("part-id")) { index = i; }
+                if(part.getAttribute("part-id") == parent.getAttribute("part-id")) { index = i; return; }
             });
 
             if(index == -1) {

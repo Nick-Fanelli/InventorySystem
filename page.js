@@ -11,6 +11,8 @@ const PartSearch = document.getElementById("part-search");
 const PartsList = document.querySelector("#main-section ul");
 const SelectedPartsList = document.querySelector("#change-list ul");
 
+const UpdateButton = document.querySelector("#change-list #update");
+
 function addPartToSelectedList(part, element) {
     let partID = part.getAttribute("part-id");
     let quantity = part.getAttribute("part-quantity");
@@ -23,6 +25,8 @@ function addPartToSelectedList(part, element) {
     element.classList.add("remove");
 
     SelectedPartsList.appendChild(selectedPart);
+
+    UpdateButton.innerHTML = `Update (${SelectedPartsListElements.length})`;
 }
 
 function removePartFromSelectedList(parent, index, element) {
@@ -35,6 +39,8 @@ function removePartFromSelectedList(parent, index, element) {
     SelectedPartsListElements.splice(index, 1);
     element.innerHTML = "Add";
     element.classList.remove("remove");
+
+    UpdateButton.innerHTML = `Update (${SelectedPartsListElements.length})`;
 }
 
 function closeSelectedPart(element) {
@@ -70,6 +76,8 @@ function closeSelectedPart(element) {
     });
 
     SelectedPartsListElements.splice(removeIndex, 1);
+
+    UpdateButton.innerHTML = `Update (${SelectedPartsListElements.length})`;
 }
 
 function incrementChangeCount(element) {

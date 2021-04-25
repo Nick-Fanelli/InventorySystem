@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base target="_top">
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,33 +11,43 @@
 
     <title>Bravenators Inventory System</title>
 
-    <link rel="stylesheet" href="page.css">
+    <?!= include("Page-CSS") ?>
+
 </head>
-<body>
-    <div class="content-wrapper">
+<body jsondata="<?= partsData; ?>">
+  <div class="content-wrapper">
     <div id="header">
-        <div class="flex">
-            <h1>Bravenators Inventory System</h1>
-            <h3 id="login-name">N. Fanelli</h3>
-        </div>
-        <div class="controls">
-            <div></div>
-            <input id="part-search" type="text" placeholder="Search Part">
-        </div>
+      <div class="flex">
+        <h1>Bravenators Inventory System</h1>
+        <h3 id="login-name"><?= username; ?></h3>
+      </div>
+      <div class="controls">
+        <div></div>
+        <input id="part-search" type="text" placeholder="Search Part">
+      </div>
     </div>
 
     <div id="main-section">
-        <div class="wrapper">
-            <ul></ul>
-        </div>
-    </div>
-</div>
-
-    <div id="change-list">
+      <div class="wrapper">
         <ul></ul>
-        <button id="update">Update (0)</button>
+      </div>
     </div>
+  </div>
 
-    <script src="page.js"></script>
+  <div id="change-list">
+    <ul></ul>
+    <button id="update">Update (0)</button>
+  </div>
+
+  <script>
+    function pushDataToSpreadsheet(data) {
+      console.log("Relaying Data to the Server...");
+      google.script.run.withSuccessHandler(function() {
+          console.log("Successfully Updated Inventory!");
+      }).updateSpreadsheetWithChangeData(data);
+    }
+  </script>
+
+    <?!= include("Page-JS") ?>
 </body>
 </html>

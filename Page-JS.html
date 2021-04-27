@@ -62,8 +62,12 @@
 
         SelectedPartsList.removeChild(parent);
 
-        selectedInventoryPart.children[1].innerHTML = "Add";
-        selectedInventoryPart.children[1].classList.remove("remove");
+        console.log(selectedInventoryPart);
+
+        let buttonElement = selectedInventoryPart.querySelector("button");
+
+        buttonElement.innerHTML = "Add";
+        buttonElement.classList.remove("remove");
 
         let removeIndex;
 
@@ -165,7 +169,10 @@
 
         let data = `
         <p>${name}</p>
-        <button ${added ? "class='remove'" : ""}>${added ? "Remove" : "Add"}</button>
+        <div>
+          <p class="quantity">${quantity}</p>
+          <button ${added ? "class='remove'" : ""}>${added ? "Remove" : "Add"}</button>
+        </div>
         `;
 
         element.innerHTML = data;
@@ -199,7 +206,7 @@
 
         buttons.forEach(function(element) {
             element.onclick = function() {
-                let parent = element.parentElement;
+                let parent = element.parentElement.parentElement;
                 let index = -1;
 
                 SelectedPartsListElements.forEach(function(part, i) {
@@ -265,6 +272,26 @@
                button.innerHTML = "Add";
                button.classList.remove("remove");
              }
+            }
+
+            for(change in changeList) {
+              let targetPart = PartsListsElements[change - 2]; // Subtract two because of part-id starting at two
+
+              // Failsafe if the target parts don't line up for whatever reason!
+              if(Number.parseInt(targetPart.getAttribute("part-id")) != change) {
+                PartsListsElements.forEach(function(element) {
+                  let id = Number.parseInt(element.getAttribute("part-id"));
+                  if(id == change) {
+                    targetPart = element;
+                    return;
+                  }
+                });
+              }
+
+              // Assign new quantity values
+              let currentQuantity = Number.parseInt(targetPart.getAttribute("part-quantity"));
+              targetPart.setAttribute("part-quantity", currentQuantity + changeList[change]);
+              targetPart.querySelector(".quantity").innerHTML = currentQuantity + changeList[change];
             }
         });
     }

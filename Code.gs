@@ -1,15 +1,19 @@
-function loadJsonPartsData(fullSheet) {
+const fullSheet = SpreadsheetApp.openById("1ft2yHXjrCviVjBk1ZoIvOgl3YSZ4iCEkEHgNMG1eWsc");
+
+function loadJsonPartsData() {
   let inventorySheet = fullSheet.getSheetByName("Inventory");
 
   let headers = inventorySheet.getRange(1, 1, 1, inventorySheet.getLastColumn()).getValues();
 
   let itemNameIndex = null;
   let quantityIndex = null;
+  let skuIndex = null;
 
   headers.forEach(function(value) {
     value.forEach(function(value, index) {
       if(value == "Quantity") quantityIndex = index + 1;  // Offset for spreadsheet api starting at 1
       else if(value == "Item Name") itemNameIndex = index + 1; // Offset for spreadsheet api starting at 1
+      else if(value == "SKU") skuIndex = index + 1; // Offset for spreadsheet api starting at 1
     });
   });
 
@@ -27,10 +31,15 @@ function loadJsonPartsData(fullSheet) {
     return el != "";
   });
 
+  let skus = inventorySheet.getRange(2, skuIndex, inventorySheet.getLastRow(), 1).getValues();
+  skus = skus.filter(function (el) {
+    return el != "";
+  });
+
   let PartLookup = {};
 
   for(let i = 0; i < itemNames.length; i++) {
-    PartLookup[i + 2] = [itemNames[i].toString(), Number.parseInt(quantities[i].toString())];
+    PartLookup[i + 2] = [itemNames[i].toString(), Number.parseInt(quantities[i].toString()), skus[i].toString()];
   }  
 
   return JSON.stringify(PartLookup);
@@ -38,7 +47,6 @@ function loadJsonPartsData(fullSheet) {
 }
 
 function updateSpreadsheetWithChangeData(data) {
-  const fullSheet = SpreadsheetApp.openById("1ft2yHXjrCviVjBk1ZoIvOgl3YSZ4iCEkEHgNMG1eWsc");
   const inventorySheet = fullSheet.getSheetByName("Inventory");
   const auditLogSheet = fullSheet.getSheetByName("Audit Log");
 
@@ -61,6 +69,8 @@ function updateSpreadsheetWithChangeData(data) {
   let currentUser = Session.getActiveUser().getEmail();
   let timestamp = new Date();
 
+  let partCount = 0;
+
   for(partID in data) {
     let cell = inventorySheet.getRange(Number.parseInt(partID), quantityIndex);
     let currentValue = Number.parseInt(cell.getValue());
@@ -73,14 +83,17 @@ function updateSpreadsheetWithChangeData(data) {
           let sku = inventorySheet.getRange(partID, 1).getValue();
           // let change = data[partID] > 0 ? "+" + data[partID] : "-" + data[partID];
 
-          auditLogSheet.getRange(2 + index, 1).setValue(timestamp.toString());
-          auditLogSheet.getRange(2 + index, 2).setValue(currentUser.toString());
-          auditLogSheet.getRange(2 + index, 3).setValue(sku);
-          auditLogSheet.getRange(2 + index, 4).setValue(data[partID]);
+          auditLogSheet.getRange(2 + index + partCount, 1).setValue(timestamp.toString());
+          auditLogSheet.getRange(2 + index + partCount, 2).setValue(currentUser.toString());
+          auditLogSheet.getRange(2 + index + partCount, 3).setValue(sku);
+          auditLogSheet.getRange(2 + index + partCount, 4).setValue(data[partID]);
 
           return;
         }
       });
+
+      partCount++;
+
     }
 
   }
@@ -90,8 +103,7 @@ function updateSpreadsheetWithChangeData(data) {
 function doGet() {
 
   // Get the inventory sheet and member sheet/page on it
-  const inventorySheet = SpreadsheetApp.openById("1ft2yHXjrCviVjBk1ZoIvOgl3YSZ4iCEkEHgNMG1eWsc");
-  const memberSheet = inventorySheet.getSheetByName("Members");
+  const memberSheet = fullSheet.getSheetByName("Members");
 
   // Get a list of allowed emails from the memberSheet
   let allowedEmails = memberSheet.getRange(2, 1, memberSheet.getLastRow(), 1).getValues();
@@ -114,7 +126,7 @@ function doGet() {
   if(accessGranted) {
     console.log("Access Granted");
 
-    let jsonPartsData = loadJsonPartsData(inventorySheet);
+    let jsonPartsData = loadJsonPartsData();
 
     let pageContext = HtmlService.createTemplateFromFile("Page");
 

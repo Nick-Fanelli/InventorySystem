@@ -1,4 +1,13 @@
-const fullSheet = SpreadsheetApp.openById("1ft2yHXjrCviVjBk1ZoIvOgl3YSZ4iCEkEHgNMG1eWsc");
+/*
+* Change the following spreadsheet ID varibale to your spreadsheet ID.
+* This can be found in the URL of the spreadsheet.
+* It will come before and after a slash.
+*
+* Important: Make sure you leave in the quotes around the spreadsheet ID!!!!
+*/
+const spreadSheetID = "1ft2yHXjrCviVjBk1ZoIvOgl3YSZ4iCEkEHgNMG1eWsc";
+
+const fullSheet = SpreadsheetApp.openById(spreadSheetID);
 
 function loadJsonPartsData() {
   let inventorySheet = fullSheet.getSheetByName("Inventory");

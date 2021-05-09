@@ -122,11 +122,13 @@ function doGet() {
 
   let accessGranted = false; // Will be determined
   let name = null;
+  let memberCellID = null;
 
   // Check to see if the current email is allowed
   allowedEmails.forEach(function(item, i) {
     if(item.toString().toLowerCase() == accessEmail.toString().toLowerCase()) {
       name = memberSheet.getRange(i + 2, 2, 1, 1).getValue();
+      memberCellID = i + 2;
       accessGranted = true; // If the current email is allowed set access granted to true
     }
   });
@@ -134,6 +136,9 @@ function doGet() {
   // Serve different pages depending on if the access is granted or not.
   if(accessGranted) {
     console.log("Access Granted");
+
+    // Save last login attempt
+    memberSheet.getRange(memberCellID, 3, 1, 1).setValue(new Date().toString());
 
     let jsonPartsData = loadJsonPartsData();
 

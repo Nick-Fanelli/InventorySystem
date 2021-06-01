@@ -9,8 +9,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Bravenators Inventory System</title>
-
     <?!= include("Page-CSS") ?>
 
 </head>
@@ -18,12 +16,12 @@
   <div class="content-wrapper">
     <div id="header">
       <div class="flex">
-        <h1>Bravenators Inventory System</h1>
+        <h1><?= teamName; ?> Inventory System</h1>
         <h3 id="login-name"><?= username; ?></h3>
       </div>
       <div class="controls">
         <div></div>
-        <input id="part-search" type="text" placeholder="Search Part">
+        <input id="part-search" type="text" placeholder="Search Part or SKU">
       </div>
     </div>
 
@@ -48,6 +46,6 @@
     }
   </script>
 
-    <?!= include("Page-JS") ?>
+  <?!= include("Page-JS") ?>
 </body>
 </html>

@@ -33,8 +33,6 @@
 
         SelectedPartsList.innerHTML = SelectedPartsList.innerHTML.toString().replace(selectedPart.outerHTML, "");
 
-        // console.log(selectedPart.outerHTML);
-
         SelectedPartsListElements.splice(index, 1);
         element.innerHTML = "Add";
         element.classList.remove("remove");
@@ -43,7 +41,7 @@
     }
 
     function closeSelectedPart(element) {
-        let parent = element.parentElement;
+        let parent = element.parentElement.parentElement;
         let partID = parent.getAttribute("part-id");
 
         let selectedInventoryPart = null;
@@ -61,8 +59,6 @@
         }
 
         SelectedPartsList.removeChild(parent);
-
-        console.log(selectedInventoryPart);
 
         let buttonElement = selectedInventoryPart.querySelector("button");
 
@@ -83,9 +79,37 @@
         UpdateButton.innerHTML = `Update (${SelectedPartsListElements.length})`;
     }
 
+    function setChangeCount(element, amount) {
+        let name = element.parentElement.parentElement.parentElement.querySelector(".name");
+        let counter = element.parentElement.parentElement.querySelector(".count");
+
+        let currentCount = amount;
+        counter.innerHTML = currentCount;
+
+        if(currentCount > 0) {
+            counter.classList.remove("negative")
+            counter.classList.add("positive");
+
+            name.classList.remove("negative");
+            name.classList.add("positive");
+        } else if(currentCount < 0) {
+            counter.classList.remove("positive");
+            counter.classList.add("negative");
+
+            name.classList.remove("positive");
+            name.classList.add("negative");
+        } else {
+            counter.classList.remove("negative");
+            counter.classList.remove("positive");
+
+            name.classList.remove("negative");
+            name.classList.remove("positive");
+        }
+    }
+
     function incrementChangeCount(element) {
-        let name = element.parentElement.parentElement.querySelector(".name");
-        let counter = element.parentElement.querySelector(".count");
+        let name = element.parentElement.parentElement.parentElement.querySelector(".name");
+        let counter = element.parentElement.parentElement.querySelector(".count");
 
         let currentCount = Number.parseInt(counter.innerHTML) + 1;
         counter.innerHTML = currentCount;
@@ -112,8 +136,8 @@
     }
 
     function decrementChangeCount(element) {
-        let name = element.parentElement.parentElement.querySelector(".name");
-        let counter = element.parentElement.querySelector(".count");
+        let name = element.parentElement.parentElement.parentElement.querySelector(".name");
+        let counter = element.parentElement.parentElement.querySelector(".count");
 
         let currentCount = Number.parseInt(counter.innerHTML) - 1;
         counter.innerHTML = currentCount;
@@ -148,8 +172,9 @@
             let partID = part;
             let partName = PartsLookup[part][0];
             let partQuantity = PartsLookup[part][1];
+            let partSku = PartsLookup[part][2];
 
-            let partElement = generatePartsListsPart(partID, partQuantity, partName, false);
+            let partElement = generatePartsListsPart(partID, partQuantity, partName, partSku, false);
             addPartToPartsList(partElement);
         }
     }
@@ -161,14 +186,15 @@
     }
 
     /* Creates a formatted part for the main parts list */
-    function generatePartsListsPart(partID, quantity, name, added) {
+    function generatePartsListsPart(partID, quantity, name, sku, added) {
         let element = document.createElement("li");
         element.setAttribute("part-name", name);
         element.setAttribute("part-id", partID);
         element.setAttribute("part-quantity", quantity);
+        element.setAttribute("part-sku", sku);
 
         let data = `
-        <p>${name}</p>
+        <p>${name} | <span style="color: #4fa1e8;">${sku}</span></p>
         <div>
           <p class="quantity">${quantity}</p>
           <button ${added ? "class='remove'" : ""}>${added ? "Remove" : "Add"}</button>
@@ -180,6 +206,19 @@
         return element;
     }
 
+    function setValueManually(item) {
+        let rawValue = window.prompt("Manually Set Value", item.innerHTML);
+        if(rawValue == null) return;
+
+        let numericalValue = Number.parseInt(rawValue);
+        if(Number.isNaN(numericalValue)) {
+            console.error("Can not assign value to: " + rawValue + " | " + numericalValue);
+            alert("Can not assign value to: '" + rawValue + "' because it's not a numerical value!");
+        } else {
+            setChangeCount(item, numericalValue);
+        }
+    }
+
     function generateSelectedPartsListPart(partID, quantity, name) {
         let element = document.createElement("li");
         element.setAttribute("part-name", name);
@@ -189,11 +228,13 @@
         let data = `
             <p class="name">${name}</p>
             <div>
-                <p class="fa fa-minus" onclick="decrementChangeCount(this);"></p>
-                <p class="count">0</p>
-                <p class="fa fa-plus" onclick="incrementChangeCount(this);"></p>
+              <div>
+                  <p class="fa fa-minus" onclick="decrementChangeCount(this);"></p>
+                  <p class="count" onclick="setValueManually(this);" style="cursor: pointer;">0</p>
+                  <p class="fa fa-plus" onclick="incrementChangeCount(this);"></p>
+              </div>
+              <p class="fa fa-times-circle close-btn" onclick="closeSelectedPart(this);"></p>
             </div>
-            <p class="fa fa-times-circle close-btn" onclick="closeSelectedPart(this);"></p>
         `
 
         element.innerHTML = data;
@@ -233,8 +274,10 @@
             } else {
                 for(part in PartsListsElements) {
                     let partName = PartsListsElements[part].getAttribute("part-name").toUpperCase().trim();
+                    let partSku = PartsListsElements[part].getAttribute("part-sku").toUpperCase();
 
-                    if(!partName.includes(value)) PartsListsElements[part].classList.add("hidden");
+                    if(!partName.includes(value) && !partSku.includes(value)) PartsListsElements[part].classList.add("hidden");
+                    else PartsListsElements[part].classList.remove("hidden");
                 }
             }
         }
@@ -298,11 +341,6 @@
 
     /* Window load function aka. main function */
     window.addEventListener('load', function() {
-        // console.log(PartsLookup);
-        // LoginName.setAttribute("data", JSON.stringify(PartsLookup));
-        // PartsLookup = JSON.parse(LoginName.getAttribute("data"));
-        // console.log(PartsLookup);
-
         // Load the parts lookup
         PartsLookup = JSON.parse(document.querySelector("body").getAttribute("jsondata"));
 
@@ -312,6 +350,4 @@
         bindUpdateButton();
         bindSearchBar(); // Bind the search bar
     });
-
-
     </script>

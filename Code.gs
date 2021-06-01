@@ -5,7 +5,9 @@
 *
 * Important: Make sure you leave in the quotes around the spreadsheet ID!!!!
 */
-const spreadSheetID = "1ft2yHXjrCviVjBk1ZoIvOgl3YSZ4iCEkEHgNMG1eWsc";
+const teamName = "Bravenators";
+const iconURL = "https://i.ibb.co/WtKnnCR/cropped-bravenator-logo.png";
+const spreadSheetID = "1Vl1cNGJkLxcmIQd-WDrvrB9OpAi32nYin08RVxzqlKc";
 
 const fullSheet = SpreadsheetApp.openById(spreadSheetID);
 
@@ -146,11 +148,23 @@ function doGet() {
 
     pageContext.username = name;
     pageContext.partsData = jsonPartsData;
+    pageContext.teamName = teamName;
 
-    return pageContext.evaluate();
+    let evaluatedPage = pageContext.evaluate();
+
+    evaluatedPage.setFaviconUrl(iconURL);
+    evaluatedPage.setTitle(teamName + " Inventory System");
+
+    return evaluatedPage;
   } else {
-    console.log("Access Denied")
-    return HtmlService.createHtmlOutputFromFile("AccessDenied");
+    let page = HtmlService.createHtmlOutputFromFile("AccessDenied");
+
+    page.setTitle("Access Denied | " + teamName + " Inventory System");
+    page.setFaviconUrl(iconURL);
+
+    console.log("Access Denied");
+
+    return page;
   }
 }
 
